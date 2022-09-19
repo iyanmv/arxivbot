@@ -1,0 +1,10 @@
+maubot: 0.2.1
+id: com.iyanmv.arxivbot
+version: 0.0.2
+license: GPL-3.0-only
+modules:
+  - arxivbot
+main_class: ArXivBot
+dependencies:
+  - requests
+  - beautifulsoup4
