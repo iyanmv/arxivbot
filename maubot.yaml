@@ -1,6 +1,6 @@
 maubot: 0.2.1
 id: com.iyanmv.arxivbot
-version: 0.0.2
+version: 0.0.4
 license: GPL-3.0-only
 modules:
   - arxivbot

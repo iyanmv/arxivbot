@@ -8,8 +8,6 @@ from maubot.handlers import command
 
 class ArXivBot(Plugin):
 
-    arxiv_regex = re.compile(r'(https?://arxiv\.org/abs/(?:quant-ph/)?[0-9\.]*)')
-
     def _parse_arxiv(self, url):
         r = requests.get(url)
         xml = r.text
@@ -38,11 +36,9 @@ class ArXivBot(Plugin):
     def _output_text(self, d):
         return f'**Date**: {d["date"]}\n\n**Title**: {d["title"]}\n\n**Authors**: {d["authors"]}\n\n**Abstract**: {d["abstract"]}\n\n**PDF**: {d["pdf"]}'
 
-    @command.passive(arxiv_regex)
+    @command.passive(r'(https?://arxiv\.org/abs/(?:quant-ph/)?[0-9\.]+)', multiple=True, multiline=True)
     async def arxiv(self, evt, matches):
-        # Remove duplicates
-        matches = [*set(matches)]
-        for match in matches:
+        for _, match in matches:
             d = self._parse_arxiv(match)
             out = self._output_text(d)
             await evt.reply(out, markdown=True)
