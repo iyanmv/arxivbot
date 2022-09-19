@@ -1,2 +1,2 @@
 # arxivbot
-A maubot plugin (matrix bot) that gives arXiv summaries
+A [maubot](https://docs.mau.fi/maubot/) plugin (matrix bot) that gives arXiv summaries.
