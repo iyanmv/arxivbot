@@ -33,7 +33,7 @@ class ArXivBot(Plugin):
             try:
                 name = elem["name"]
             except KeyError:
-                pass
+                continue
             if name == "citation_title":
                 title = elem["content"]
             elif name == "citation_author":
