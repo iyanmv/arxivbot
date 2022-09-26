@@ -1,10 +1,11 @@
 maubot: 0.2.1
 id: com.iyanmv.arxivbot
-version: 0.0.4
+version: 0.0.5
 license: GPL-3.0-only
 modules:
   - arxivbot
 main_class: ArXivBot
 dependencies:
-  - requests
+  - aiohttp
   - beautifulsoup4
+  - lxml

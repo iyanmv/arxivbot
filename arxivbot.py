@@ -1,5 +1,4 @@
-import re
-import requests
+import aiohttp
 import datetime
 from bs4 import BeautifulSoup
 from maubot import Plugin
@@ -8,9 +7,26 @@ from maubot.handlers import command
 
 class ArXivBot(Plugin):
 
-    def _parse_arxiv(self, url):
-        r = requests.get(url)
-        xml = r.text
+    @staticmethod
+    async def _request(url):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                html = await response.text()
+                return html
+
+    @staticmethod
+    def _output_text(d):
+        msg = (
+            f'**Date**: {d["date"]}\n\n'
+            f'**Title**: {d["title"]}\n\n'
+            f'**Authors**: {d["authors"]}\n\n'
+            f'**Abstract**: {d["abstract"]}\n\n'
+            f'**PDF**: {d["pdf"]}'
+        )
+        return msg
+
+    async def _parse_arxiv(self, url):
+        xml = await self._request(url)
         soup = BeautifulSoup(xml, features="xml")
         authors = []
         for elem in soup.head.find_all("meta"):
@@ -33,12 +49,9 @@ class ArXivBot(Plugin):
         authors = ", ".join(authors)
         return {"title": title, "authors": authors, "date": date, "abstract": abstract, "pdf": pdf}
 
-    def _output_text(self, d):
-        return f'**Date**: {d["date"]}\n\n**Title**: {d["title"]}\n\n**Authors**: {d["authors"]}\n\n**Abstract**: {d["abstract"]}\n\n**PDF**: {d["pdf"]}'
-
     @command.passive(r'(https?://arxiv\.org/abs/(?:quant-ph/)?[0-9\.]+)', multiple=True, multiline=True)
     async def arxiv(self, evt, matches):
         for _, match in matches:
-            d = self._parse_arxiv(match)
+            d = await self._parse_arxiv(match)
             out = self._output_text(d)
             await evt.reply(out, markdown=True)
