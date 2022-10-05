@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from maubot import Plugin
 from maubot.handlers import command
 
+regex_expr = r'(https?://arxiv\.org/abs/(?:[a-z\-]*/)?[0-9]+\.?[0-9]+)'
 
 class ArXivBot(Plugin):
 
@@ -49,7 +50,7 @@ class ArXivBot(Plugin):
         authors = ", ".join(authors)
         return {"title": title, "authors": authors, "date": date, "abstract": abstract, "pdf": pdf}
 
-    @command.passive(r'(https?://arxiv\.org/abs/(?:quant-ph/)?[0-9\.]+)', multiple=True, multiline=True)
+    @command.passive(regex_expr, multiple=True, multiline=True)
     async def arxiv(self, evt, matches):
         for _, match in matches:
             d = await self._parse_arxiv(match)
